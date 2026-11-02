@@ -1,59 +1,58 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sumber Rezeki — Wood Sales System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem manajemen penjualan kayu berbasis Laravel untuk membantu admin dan kasir mengelola produk, stok, pelanggan, dan transaksi dalam satu aplikasi. Setiap transaksi dapat diterbitkan sebagai invoice PDF dengan QR code dan tanda tangan digital agar integritas invoice dapat diverifikasi.
 
-## About Laravel
+## Tampilan aplikasi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Dashboard Sumber Rezeki — Wood Sales System](public/images/dashboard-screenshot.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Dashboard ringkasan penjualan, transaksi, dan stok.
+- Pengelolaan produk kayu, harga, stok, dan data pelanggan.
+- Pencatatan transaksi penjualan dengan validasi stok.
+- Penerbitan invoice PDF, QR code, hash SHA-256, dan tanda tangan RSA-PSS.
+- Halaman verifikasi invoice publik menggunakan token.
+- Hak akses admin dan kasir, termasuk pengelolaan kunci RSA khusus admin.
+- Audit aktivitas penting.
 
-## Learning Laravel
+## Teknologi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2+ dan Laravel 12
+- SQLite untuk pengembangan lokal; MySQL 8+ direkomendasikan untuk deployment
+- Node.js dan npm untuk build asset frontend
+- Pest untuk pengujian
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Menjalankan secara lokal (Windows PowerShell)
 
-## Laravel Sponsors
+Pastikan PHP beserta ekstensi OpenSSL, PDO SQLite, Mbstring, XML, Ctype, JSON, dan Fileinfo, Composer, Node.js, serta npm sudah terpasang.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```powershell
+composer install
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+php artisan key:generate
+if (-not (Test-Path database\database.sqlite)) { New-Item -ItemType File -Path database\database.sqlite }
+php artisan migrate
+npm ci
+npm run build
+php artisan serve
+```
 
-### Premium Partners
+Buka `http://127.0.0.1:8000`. Untuk membuat data contoh dan akun demo, jalankan `php artisan db:seed` pada lingkungan lokal saja. Seeder membuat akun demo dengan kredensial bawaan; jangan gunakan atau jalankan akun tersebut di production.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Pengujian
 
-## Contributing
+```powershell
+php artisan test
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Deployment dan keamanan
 
-## Code of Conduct
+Panduan konfigurasi production, database MySQL, dan pengelolaan `APP_KEY` tersedia di [docs/deployment.md](docs/deployment.md). Jangan commit `.env`, kredensial, private key, atau database lokal ke repository. Private key aplikasi dienkripsi menggunakan `APP_KEY`; simpan dan backup key tersebut melalui secret manager.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Dokumentasi
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [Analisis sistem](docs/phase-1-analysis.md)
+- [Diagram sistem](docs/diagrams.md)
+- [ERD](docs/erd.mmd)
+- [Panduan deployment](docs/deployment.md)
