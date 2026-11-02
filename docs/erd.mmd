@@ -1,0 +1,129 @@
+erDiagram
+    USERS ||--o{ SALES : creates
+    CUSTOMERS ||--o{ SALES : places
+    SALES ||--|{ SALE_DETAILS : contains
+    PRODUCTS ||--o{ SALE_DETAILS : sold_as
+    SALES ||--|| INVOICES : issues
+    INVOICES ||--|| DIGITAL_SIGNATURES : protected_by
+    RSA_KEYS ||--o{ DIGITAL_SIGNATURES : verifies
+    USERS ||--o{ AUDIT_LOGS : performs
+
+    USERS {
+        bigint id PK
+        varchar name
+        varchar email UK
+        varchar password
+        enum role
+        timestamp email_verified_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    PRODUCTS {
+        bigint id PK
+        varchar code UK
+        varchar name
+        varchar wood_type
+        varchar size
+        decimal length
+        decimal width
+        decimal thickness
+        varchar unit
+        decimal selling_price
+        decimal stock
+        decimal minimum_stock
+        text description
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    CUSTOMERS {
+        bigint id PK
+        varchar code UK
+        varchar name
+        varchar phone
+        text address
+        varchar email
+        date registered_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    SALES {
+        bigint id PK
+        varchar invoice_number UK
+        bigint user_id FK
+        bigint customer_id FK
+        decimal subtotal
+        decimal discount
+        decimal grand_total
+        decimal amount_paid
+        decimal change_amount
+        enum status
+        timestamp issued_at
+        timestamp cancelled_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    SALE_DETAILS {
+        bigint id PK
+        bigint sale_id FK
+        bigint product_id FK
+        varchar product_code_snapshot
+        varchar product_name_snapshot
+        varchar wood_type_snapshot
+        varchar size_snapshot
+        varchar unit_snapshot
+        decimal quantity
+        decimal unit_price
+        decimal subtotal
+        timestamp created_at
+        timestamp updated_at
+    }
+    INVOICES {
+        bigint id PK
+        bigint sale_id FK UK
+        varchar public_token UK
+        varchar canonical_payload_hash
+        json canonical_payload
+        enum status
+        timestamp issued_at
+        timestamp revoked_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    DIGITAL_SIGNATURES {
+        bigint id PK
+        bigint invoice_id FK UK
+        bigint rsa_key_id FK
+        varchar signature_base64
+        varchar hash_algorithm
+        varchar signature_algorithm
+        varchar payload_hash
+        timestamp signed_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    RSA_KEYS {
+        bigint id PK
+        varchar version UK
+        text public_key
+        text encrypted_private_key
+        varchar key_algorithm
+        unsigned smallint key_size
+        enum status
+        timestamp generated_at
+        timestamp retired_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    AUDIT_LOGS {
+        bigint id PK
+        bigint user_id FK
+        varchar action
+        varchar auditable_type
+        bigint auditable_id
+        json metadata
+        varchar ip_address
+        text user_agent
+        timestamp created_at
+        timestamp updated_at
+    }
